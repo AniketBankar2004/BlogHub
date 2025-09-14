@@ -24,8 +24,8 @@ It uses **Java Spring Boot** for the backend and a lightweight frontend built wi
 **Backend:**  
 - Java Spring Boot  
 - Spring Web  
-- Spring Data JPA (or Spring Data MongoDB if you are using MongoDB)  
-- H2 Database / MongoDB (choose based on your setup)  
+- Spring Data MongoDB 
+- MongoDB  
 
 ---
 
