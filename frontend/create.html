@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Blog</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .back-btn {
+            background: rgba(102, 126, 234, 0.1);
+            color: #667eea;
+            border: 2px solid #667eea;
+            padding: 12px 24px;
+            font-size: 1rem;
+            font-weight: 600;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-bottom: 30px;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .back-btn:hover {
+            background: #667eea;
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        .main-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            font-size: 1.1rem;
+            color: #666;
+            margin-bottom: 30px;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #333;
+            font-size: 1.1rem;
+        }
+
+        .form-input, .form-textarea {
+            width: 100%;
+            padding: 15px 20px;
+            font-size: 1rem;
+            border: 2px solid #e1e5e9;
+            border-radius: 15px;
+            font-family: inherit;
+            transition: all 0.3s ease;
+            background: white;
+        }
+
+        .form-input:focus, .form-textarea:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+            transform: translateY(-1px);
+        }
+
+        .form-textarea {
+            resize: vertical;
+            min-height: 150px;
+            line-height: 1.6;
+        }
+
+        .char-count {
+            text-align: right;
+            font-size: 0.9rem;
+            color: #888;
+            margin-top: 5px;
+        }
+
+        .submit-btn {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            padding: 18px 40px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+            width: 100%;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .submit-btn:hover:not(:disabled) {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 30px rgba(102, 126, 234, 0.4);
+        }
+
+        .submit-btn:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+        }
+
+        .submit-btn.loading::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 20px;
+            height: 20px;
+            margin: -10px 0 0 -10px;
+            border: 2px solid transparent;
+            border-top: 2px solid white;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .notification {
+            padding: 15px 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            font-weight: 500;
+            display: none;
+        }
+
+        .notification.success {
+            background: #d1f2eb;
+            color: #0c5946;
+            border-left: 4px solid #17a2b8;
+        }
+
+        .notification.error {
+            background: #f8d7da;
+            color: #721c24;
+            border-left: 4px solid #dc3545;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px;
+                margin: 10px;
+            }
+
+            .main-title {
+                font-size: 2rem;
+            }
+
+            .back-btn {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <button class="back-btn" onclick="window.location.href='index.html'">
+            ← Back to Home
+        </button>
+        
+        <div class="header">
+            <h1 class="main-title">Create New Blog</h1>
+            <p class="subtitle">Share your story with the world</p>
+        </div>
+
+        <div id="notification" class="notification"></div>
+
+        <form id="blog-form">
+            <div class="form-group">
+                <label for="title" class="form-label">Blog Title</label>
+                <input type="text" id="title" class="form-input" placeholder="Enter your blog title..." required maxlength="100">
+                <div class="char-count">
+                    <span id="title-count">0</span>/100 characters
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="content" class="form-label">Content</label>
+                <textarea id="content" class="form-textarea" placeholder="Write your blog content here..." required maxlength="5000"></textarea>
+                <div class="char-count">
+                    <span id="content-count">0</span>/5000 characters
+                </div>
+            </div>
+
+            <button type="submit" class="submit-btn" id="submit-btn">
+                <span id="btn-text">Publish Blog</span>
+            </button>
+        </form>
+    </div>
+
+    <script>
+        const API_URL = 'http://localhost:8080/api/blogs';
+        const form = document.getElementById('blog-form');
+        const submitBtn = document.getElementById('submit-btn');
+        const btnText = document.getElementById('btn-text');
+        const notification = document.getElementById('notification');
+        const titleInput = document.getElementById('title');
+        const contentInput = document.getElementById('content');
+        const titleCount = document.getElementById('title-count');
+        const contentCount = document.getElementById('content-count');
+
+        // Character count updates
+        titleInput.addEventListener('input', () => {
+            titleCount.textContent = titleInput.value.length;
+        });
+
+        contentInput.addEventListener('input', () => {
+            contentCount.textContent = contentInput.value.length;
+        });
+
+        function showNotification(message, type) {
+            notification.textContent = message;
+            notification.className = `notification ${type}`;
+            notification.style.display = 'block';
+            
+            setTimeout(() => {
+                notification.style.display = 'none';
+            }, 5000);
+        }
+
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const title = titleInput.value.trim();
+            const content = contentInput.value.trim();
+
+            if (!title || !content) {
+                showNotification('Please fill in all fields', 'error');
+                return;
+            }
+
+            // Show loading state
+            submitBtn.disabled = true;
+            submitBtn.classList.add('loading');
+            btnText.textContent = 'Publishing...';
+
+            const created_at = new Date().toISOString();
+            const newBlog = { title, content, created_at };
+
+            try {
+                const response = await fetch(API_URL, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(newBlog)
+                });
+
+                if (response.ok) {
+                    showNotification('Blog published successfully!', 'success');
+                    setTimeout(() => {
+                        window.location.href = 'index.html';
+                    }, 1500);
+                } else {
+                    throw new Error('Failed to publish blog');
+                }
+            } catch (error) {
+                console.error('Error adding blog:', error);
+                showNotification('Failed to publish blog. Please try again.', 'error');
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.classList.remove('loading');
+                btnText.textContent = 'Publish Blog';
+            }
+        });
+    </script>
+</body>
+</html>

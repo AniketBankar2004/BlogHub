@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Blog</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .back-btn {
+            background: rgba(102, 126, 234, 0.1);
+            color: #667eea;
+            border: 2px solid #667eea;
+            padding: 12px 24px;
+            font-size: 1rem;
+            font-weight: 600;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-bottom: 30px;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .back-btn:hover {
+            background: #667eea;
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        .main-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            font-size: 1.1rem;
+            color: #666;
+            margin-bottom: 30px;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #333;
+            font-size: 1.1rem;
+        }
+
+        .form-input, .form-textarea {
+            width: 100%;
+            padding: 15px 20px;
+            font-size: 1rem;
+            border: 2px solid #e1e5e9;
+            border-radius: 15px;
+            font-family: inherit;
+            transition: all 0.3s ease;
+            background: white;
+        }
+
+        .form-input:focus, .form-textarea:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+            transform: translateY(-1px);
+        }
+
+        .form-textarea {
+            resize: vertical;
+            min-height: 150px;
+            line-height: 1.6;
+        }
+
+        .char-count {
+            text-align: right;
+            font-size: 0.9rem;
+            color: #888;
+            margin-top: 5px;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 15px;
+            margin-top: 30px;
+        }
+
+        .submit-btn, .cancel-btn {
+            padding: 18px 40px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            flex: 1;
+            border: none;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .submit-btn {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+        }
+
+        .submit-btn:hover:not(:disabled) {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 30px rgba(102, 126, 234, 0.4);
+        }
+
+        .cancel-btn {
+            background: #f8f9fa;
+            color: #666;
+            border: 2px solid #dee2e6;
+        }
+
+        .cancel-btn:hover {
+            background: #e9ecef;
+            transform: translateY(-2px);
+        }
+
+        .submit-btn:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+        }
+
+        .submit-btn.loading::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 20px;
+            height: 20px;
+            margin: -10px 0 0 -10px;
+            border: 2px solid transparent;
+            border-top: 2px solid white;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .notification {
+            padding: 15px 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            font-weight: 500;
+            display: none;
+        }
+
+        .notification.success {
+            background: #d1f2eb;
+            color: #0c5946;
+            border-left: 4px solid #17a2b8;
+        }
+
+        .notification.error {
+            background: #f8d7da;
+            color: #721c24;
+            border-left: 4px solid #dc3545;
+        }
+
+        .loading-skeleton {
+            background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+            background-size: 200% 100%;
+            animation: loading 1.5s infinite;
+            border-radius: 10px;
+            height: 20px;
+            margin-bottom: 15px;
+        }
+
+        @keyframes loading {
+            0% { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
+        }
+
+        .loading-skeleton.title {
+            height: 45px;
+            margin-bottom: 25px;
+        }
+
+        .loading-skeleton.content {
+            height: 150px;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px;
+                margin: 10px;
+            }
+
+            .main-title {
+                font-size: 2rem;
+            }
+
+            .back-btn {
+                width: 100%;
+                justify-content: center;
+            }
+
+            .button-group {
+                flex-direction: column;
+            }
+
+            .submit-btn, .cancel-btn {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <button class="back-btn" onclick="window.location.href='index.html'">
+            ← Back to Home
+        </button>
+        
+        <div class="header">
+            <h1 class="main-title">Edit Blog</h1>
+            <p class="subtitle">Update your blog post</p>
+        </div>
+
+        <div id="notification" class="notification"></div>
+
+        <form id="blog-form">
+            <div id="form-content">
+                <!-- Form content will be loaded here -->
+            </div>
+        </form>
+    </div>
+
+    <script>
+        const API_URL = 'http://localhost:8080/api/blogs';
+        const params = new URLSearchParams(window.location.search);
+        const blogId = params.get('id');
+        let originalBlog = null;
+
+        function showNotification(message, type) {
+            const notification = document.getElementById('notification');
+            notification.textContent = message;
+            notification.className = `notification ${type}`;
+            notification.style.display = 'block';
+            
+            setTimeout(() => {
+                notification.style.display = 'none';
+            }, 5000);
+        }
+
+        function showLoadingSkeleton() {
+            const formContent = document.getElementById('form-content');
+            formContent.innerHTML = `
+                <div class="form-group">
+                    <label class="form-label">Blog Title</label>
+                    <div class="loading-skeleton title"></div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Content</label>
+                    <div class="loading-skeleton content"></div>
+                </div>
+            `;
+        }
+
+        function renderForm(blog) {
+            const formContent = document.getElementById('form-content');
+            formContent.innerHTML = `
+                <div class="form-group">
+                    <label for="title" class="form-label">Blog Title</label>
+                    <input type="text" id="title" class="form-input" placeholder="Enter your blog title..." required maxlength="100" value="${blog.title}">
+                    <div class="char-count">
+                        <span id="title-count">${blog.title.length}</span>/100 characters
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="content" class="form-label">Content</label>
+                    <textarea id="content" class="form-textarea" placeholder="Write your blog content here..." required maxlength="5000">${blog.content}</textarea>
+                    <div class="char-count">
+                        <span id="content-count">${blog.content.length}</span>/5000 characters
+                    </div>
+                </div>
+
+                <div class="button-group">
+                    <button type="submit" class="submit-btn" id="submit-btn">
+                        <span id="btn-text">Update Blog</span>
+                    </button>
+                    <button type="button" class="cancel-btn" onclick="window.location.href='index.html'">
+                        Cancel
+                    </button>
+                </div>
+            `;
+
+            // Add event listeners for character counting
+            const titleInput = document.getElementById('title');
+            const contentInput = document.getElementById('content');
+            const titleCount = document.getElementById('title-count');
+            const contentCount = document.getElementById('content-count');
+
+            titleInput.addEventListener('input', () => {
+                titleCount.textContent = titleInput.value.length;
+            });
+
+            contentInput.addEventListener('input', () => {
+                contentCount.textContent = contentInput.value.length;
+            });
+
+            // Add form submit event listener
+            const form = document.getElementById('blog-form');
+            form.addEventListener('submit', handleSubmit);
+        }
+
+        async function fetchBlog() {
+            showLoadingSkeleton();
+
+            try {
+                const response = await fetch(API_URL);
+                
+                if (!response.ok) {
+                    throw new Error('Failed to fetch blogs');
+                }
+
+                const blogs = await response.json();
+                const blog = blogs.find(b => b.id === blogId);
+
+                if (!blog) {
+                    showNotification('Blog not found', 'error');
+                    setTimeout(() => {
+                        window.location.href = 'index.html';
+                    }, 2000);
+                    return;
+                }
+
+                originalBlog = blog;
+                renderForm(blog);
+            } catch (error) {
+                console.error('Error fetching blog:', error);
+                showNotification('Failed to load blog. Please try again.', 'error');
+                setTimeout(() => {
+                    window.location.href = 'index.html';
+                }, 2000);
+            }
+        }
+
+        async function handleSubmit(e) {
+            e.preventDefault();
+
+            const titleInput = document.getElementById('title');
+            const contentInput = document.getElementById('content');
+            const submitBtn = document.getElementById('submit-btn');
+            const btnText = document.getElementById('btn-text');
+
+            const title = titleInput.value.trim();
+            const content = contentInput.value.trim();
+
+            if (!title || !content) {
+                showNotification('Please fill in all fields', 'error');
+                return;
+            }
+
+            // Check if there are any changes
+            if (title === originalBlog.title && content === originalBlog.content) {
+                showNotification('No changes detected', 'error');
+                return;
+            }
+
+            // Show loading state
+            submitBtn.disabled = true;
+            submitBtn.classList.add('loading');
+            btnText.textContent = 'Updating...';
+
+            // Prepare updated blog object
+            const updatedBlog = {
+                title: title,
+                content: content,
+                created_at: originalBlog.created_at // Preserve original creation date
+            };
+
+            try {
+                const response = await fetch(`${API_URL}/${blogId}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(updatedBlog)
+                });
+
+                if (response.ok) {
+                    showNotification('Blog updated successfully!', 'success');
+                    setTimeout(() => {
+                        window.location.href = 'index.html';
+                    }, 1500);
+                } else if (response.status === 404) {
+                    showNotification('Blog not found', 'error');
+                } else {
+                    throw new Error('Failed to update blog');
+                }
+            } catch (error) {
+                console.error('Error updating blog:', error);
+                showNotification('Failed to update blog. Please try again.', 'error');
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.classList.remove('loading');
+                btnText.textContent = 'Update Blog';
+            }
+        }
+
+        // Check if blog ID is provided
+        if (!blogId) {
+            showNotification('Invalid blog ID', 'error');
+            setTimeout(() => {
+                window.location.href = 'index.html';
+            }, 2000);
+        } else {
+            fetchBlog();
+        }
+    </script>
+</body>
+</html>
